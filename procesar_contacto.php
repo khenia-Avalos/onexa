@@ -13,6 +13,11 @@ use PHPMailer\PHPMailer\Exception;
 require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
+require __DIR__ . '/vendor/autoload.php'; // Carga Composer
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load(); // Carga variables de entorno
+
 
 //Importo las herramientas necesarias para enviar correos electrónicos de forma segura y profesional, estos estan en el archivo implementado
 
@@ -53,8 +58,9 @@ try {
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'kheniavalos@gmail.com'; // Tu email de Gmail
-    $mail->Password = 'ldpn jmvl jcko pmuw'; // Contraseña de aplicación para permitir que programas o aplicaciones accedan a tu cuenta de forma segura, sin usar tu contraseña principal.
+    $mail->Username = getenv('MAIL_USERNAME');
+$mail->Password = getenv('MAIL_PASSWORD');
+ // Contraseña de aplicación para permitir que programas o aplicaciones accedan a tu cuenta de forma segura, sin usar tu contraseña principal.
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;//El puerto 587 es el puerto estándar para el envío de correos con envío seguro mediante STARTTLS.
     $mail->CharSet = 'UTF-8';
