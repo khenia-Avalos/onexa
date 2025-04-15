@@ -1,0 +1,456 @@
+
+
+.terms-header {
+    background-color: rgb(15, 15, 195);
+    color: white;
+    padding: 3rem 0;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.terms-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.terms-header p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+.terms-container {
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+}
+
+.terms-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.terms-section h2 {
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.terms-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-color);
+}
+
+.terms-section p {
+    margin-bottom: 1.2rem;
+    color: var(--text-color);
+}
+
+.terms-section ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.terms-section li {
+    margin-bottom: 0.8rem;
+}
+
+.highlight-box {
+    background-color: #eff6ff;
+    border-left: 4px solid var(--primary-color);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.highlight-box p {
+    margin-bottom: 0;
+}
+
+.last-updated {
+    text-align: right;
+    font-style: italic;
+    color: #6b7280;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .terms-header {
+        padding: 2rem 1rem;
+    }
+    
+    .terms-header h1 {
+        font-size: 2rem;
+    }
+    
+    .terms-container {
+        padding: 0 1rem;
+    }
+    
+    .terms-section {
+        padding: 1.5rem;
+    }
+}
+
+
+
+
+.affirm-banner {
+    width: 100%;
+    height: 500px;
+    background-image: url('baneraffirm.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.affirm-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(215, 206, 206, 0.433); /* Overlay gris claro */
+}
+
+.affirm-banner-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.affirm-banner h1 {
+    font-size: 2.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color:black
+}
+
+.affirm-banner p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: black
+}
+
+.affirm-logo {
+    height: 50px;
+    margin-bottom: 2rem;
+  
+}
+
+
+.affirm-container {
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 20px;
+}
+
+.affirm-section-title {
+    text-align: center;
+    color: var(--onexa-blue);
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    font-weight: 600;
+}
+
+.affirm-steps {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 5rem;
+}
+
+.affirm-step {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    padding: 0 15px;
+}
+
+.affirm-step-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    background-color: var(--light-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.affirm-step-icon img {
+    max-width: 60%;
+    max-height: 60%;
+}
+
+.affirm-step h3 {
+    color: var(--onexa-blue);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.affirm-step p {
+    color: var(--text-medium);
+    line-height: 1.6;
+}
+
+.affirm-categories {
+    background-color: var(--light-bg);
+    padding: 4rem 2rem;
+    text-align: center;
+    margin: 4rem 0;
+}
+
+.affirm-categories h2 {
+    color: var(--affirm-purple);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.affirm-categories p {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+
+.affirm-cta {
+    text-align: center;
+    margin: 4rem 0;
+}
+
+.affirm-cta-button {
+    display: inline-block;
+    background-color: var(--affirm-purple);
+    color: var(--white);
+    padding: 15px 40px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+
+@media (max-width: 768px) {
+    .affirm-banner {
+        height: 400px;
+    }
+    
+    .affirm-banner h1 {
+        font-size: 2rem;
+    }
+    
+    .affirm-banner p {
+        font-size: 1rem;
+    }
+    
+    .affirm-steps {
+        flex-direction: column;
+        gap: 40px;
+    }
+    
+    .affirm-step {
+        min-width: 100%;
+    }
+}
+
+
+
+   /* Hero Section */
+   .hero-container {
+    background: 
+        linear-gradient(rgba(3, 1, 11, 0.8), rgba(10, 3, 67, 0.7)),
+        url('img/sonymembre.png') no-repeat center center;
+    background-size: cover;
+    color: #fff;
+    position: relative;
+    height: auto;
+    min-height: 400px;
+    padding: 60px 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 5%;
+    max-width: 1400px;
+    margin: 0 0 0 auto; /* Cambiado para alinear a la derecha */
+    min-height: 300px;
+    align-items: flex-end; /* Alinea el contenido a la derecha */
+    text-align: right; /* Texto alineado a la derecha */
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    max-width: 800px;
+}
+
+.hero-title span {
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    font-weight: 300;
+    max-width: 600px;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: flex-end; /* Botones alineados a la derecha */
+}
+
+.cta-primary {
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    color: white;
+    padding: 15px 35px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+}
+
+.hero-scroll-indicator {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    animation: bounce 2s infinite;
+}
+
+.hero-scroll-indicator svg {
+    width: 30px;
+    height: 30px;
+    fill: white;
+    opacity: 0.7;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) translateX(-50%);
+    }
+    40% {
+        transform: translateY(-20px) translateX(-50%);
+    }
+    60% {
+        transform: translateY(-10px) translateX(-50%);
+    }
+}
+
+/* Sección de Membresía */
+.membership-section {
+    background-color: #f5f5f5;
+    padding: 30px 5%;
+    text-align: center;
+}
+
+.membership-content {
+    max-width: 800px;
+    margin: 0 auto;
+    color: #333;
+}
+
+.membership-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #0a0343;
+}
+
+.membership-steps {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.step {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.step-number {
+    font-weight: bold;
+    color: #0072ff;
+    font-size: 1.2rem;
+}
+
+.benefits {
+    margin-top: 20px;
+    font-style: italic;
+    color: #0072ff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-container {
+        min-height: 350px;
+        padding: 40px 0;
+    }
+    
+    .hero-content {
+        text-align: center;
+        align-items: center;
+        margin: 0 auto;
+    }
+    
+    .hero-cta {
+        justify-content: center;
+    }
+    
+    .membership-steps {
+        flex-direction: column;
+    }
+}

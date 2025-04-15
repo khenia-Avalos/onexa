@@ -1,0 +1,485 @@
+:root {
+    --primary-color: #0066cc;
+    --secondary-color: #333;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #757575;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    
+}
+
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.checkout-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.cart-summary, .customer-info {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+}
+
+.cart-item {
+    display: flex;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.cart-item-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-right: 20px;
+}
+
+.cart-item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.cart-item-price {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.quantity-select {
+    padding: 8px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.cart-total {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--medium-gray);
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.name-fields {
+    display: flex;
+    gap: 15px;
+}
+
+.pay-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Modal de éxito */
+#modalExito {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .checkout-container {
+        flex-direction: column;
+    }
+
+
+
+
+}
+
+
+
+
+    /* Estilos para los productos recomendados - 5 EN UNA FILA */
+    .recomendados-container {
+        width: 100%;
+        max-width: 1400px; /* Aumenté el ancho máximo para acomodar 5 cards */
+        margin: 40px auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        box-sizing: border-box;
+        overflow-x: auto; /* Para móviles por si no caben */
+    }
+    
+    .recomendados-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 24px;
+        color: #333;
+    }
+    
+    .recomendados-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 columnas de igual tamaño */
+        gap: 20px;
+        justify-items: center;
+        width: 100%;
+    }
+    
+    .recomendado-item {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+        width: 100%;
+        min-width: 200px; /* Ancho mínimo para mantener la legibilidad */
+    }
+    
+    /* Resto de estilos permanece igual */
+    .recomendado-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .recomendado-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+        border-radius: 5px;
+    }
+    
+    .recomendado-info {
+        margin-top: 10px;
+        text-align: center;
+    }
+    
+    /* ... (mantén el resto de tus estilos igual) ... */
+    
+    /* Estilos para pantallas más pequeñas */
+    @media (max-width: 1200px) {
+        .recomendados-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+    }
+
+    /* Estilos para el botón "Ver detalles" */
+    .ver-detalles {
+        background-color: #2a6496;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-top: 10px;
+    }
+    
+    .ver-detalles:hover {
+        background-color: #1d4b75;
+        color: white;
+    }
+    
+    /* Asegúrate que no haya otros estilos sobrescribiendo */
+    .recomendado-actions .ver-detalles,
+    .recomendado-item .ver-detalles {
+        background-color: #2a6496 !important;
+        color: white !important;
+    }
+
+
+        /* Estilos para el banner de video responsive */
+        .video-banner {
+            width: 100vw;
+            height: 550px; /* Altura fija de 500px */
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .video-banner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Media queries para ajustes responsive */
+        @media (max-width: 1024px) {
+            .video-banner {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .video-banner {
+                height: 300px;
+            }
+
+
+            .text-banner {
+                padding: 30px 15px;
+            }
+            
+            .text-banner h2 {
+                font-size: 2rem;
+            }
+            
+            .text-banner p {
+                font-size: 1rem;
+
+        }
+
+      
+    }
+
+
+        @media (max-width: 480px) {
+            .video-banner {
+                height: 250px;
+                margin-bottom: 20px;
+            }
+        }
+
+
+      
+        
+       
+        
+        /* Estilos para el cuadro de imagen de auriculares */
+        .headphones-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .headphones-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .headphones-features {
+            margin-top: 20px;
+            text-align: left;
+            padding: 0 20px;
+        }
+        
+        .headphones-features li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .headphones-features li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        .text-banner {
+            background-color: #f8f9fa;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .text-banner h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .text-banner p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+
+
+        /* Estilo similar al diseño de Sony */
+.sony-style-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1500px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #000000;
+
+    border-radius: 8px;
+    color: #f5f5f5;
+}
+
+.sony-text-content {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    font-size: 1.7em;
+}
+
+.sony-image-content {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+    background-color: #3d3c3c;
+}
+
+.sony-image-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.sony-discount-banner {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #540606;
+    color: #fff;
+    display: inline-block;
+    font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .sony-style-section {
+        flex-direction: column;
+    }
+    
+    .sony-text-content, 
+    .sony-image-content {
+        width: 100%;
+    }
+}
+
+
+
+
+/* Estilo para el contenedor del botón */
+.trash-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+
+    margin-left: 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Estilo para la imagen del icono */
+  .trash-icon {
+    width: 30px; /* Ajusta según necesites */
+    height: 30px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+  }
+
+  /* Efecto hover */
+  .trash-btn:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+  }
+  
+  .trash-btn:hover .trash-icon {
+    transform: scale(1.1);
+  }
+  
+  /* Efecto al hacer click */
+  .trash-btn:active .trash-icon {
+    transform: scale(0.9);
+  }
+  
+  /* Estado de carga (opcional) */
+  .trash-btn.loading .trash-icon {
+    animation: spin 0.5s linear infinite;
+    opacity: 0.7;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

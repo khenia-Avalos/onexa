@@ -1,0 +1,73 @@
+/* Especificaciones técnicas */
+.product-specs {
+    margin-top: 40px;
+    padding: 25px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e1e1e1;
+}
+
+.specs-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e1e1e1;
+}
+
+.spec-category {
+    margin-bottom: 25px;
+}
+
+.spec-category-title {
+    font-size: 1.2rem;
+    color: #444;
+    margin: 15px 0 10px;
+    padding-left: 10px;
+    border-left: 4px solid #007bff;
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.spec-item {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.spec-name {
+    font-weight: 600;
+    color: #555;
+    min-width: 180px;
+    display: inline-block;
+}
+
+.spec-value {
+    color: #222;
+    flex: 1;
+}
+
+.no-specs {
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .specs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .spec-item {
+        flex-direction: column;
+    }
+    
+    .spec-name {
+        margin-bottom: 5px;
+        min-width: auto;
+    }
+}
