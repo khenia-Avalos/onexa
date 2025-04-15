@@ -488,7 +488,7 @@ $conexion->close();
                 const action = this.querySelector('i').className;//Guarda las clases del icono en action (ej: bxs-edit)
                 
                 if (action.includes('bxs-edit')) {//Si las clases del icono incluyen bxs-edit (es el icono de lápiz), entonces..
-                    Swal.fire({//Muestra una ventana emergente
+                    Swal.fire({//Muestra una ventana emergenteññ
                         title: 'Editar Pedido',
                         text: 'Aquí se abriría el formulario para editar el pedido',
                         icon: 'info',
