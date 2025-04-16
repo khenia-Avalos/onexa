@@ -1,109 +1,121 @@
 <?php
-// Iniciar buffer para evitar corrupción de JSON
-ob_start();//l buffer actúa como seguro de calidad, asegurando que solo llegue al navegador el JSON limpio que quieres enviar, sin contaminación accidental.
+declare(strict_types=1);
+header('Content-Type: application/json');
+ob_start();
 
-// Configuración de errores
-ini_set('display_errors', 0);//oculta errores en produccion 
-error_reporting(E_ALL);//pero los reporta internamente
-header('Content-Type: application/json');//la respuesta sera json
+// Iniciar sesión para validar CSRF
+session_start();
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
-require __DIR__ . '/vendor/autoload.php'; // Carga Composer
-
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load(); // Carga variables de entorno
-
-
-//Importo las herramientas necesarias para enviar correos electrónicos de forma segura y profesional, estos estan en el archivo implementado
-
-
-// Validar método POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método no permitido']);//Verifico que el formulario se envió correctamente, y si no, devuelvo un error claro.
-    exit;
-}
-
-// Sanitizar entradas Limpio cada dato recibido para eliminar posibles códigos maliciosos,
-//  como si pasara cada valor por un filtro de seguridad
-$nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_STRING);
-$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-$asunto_form = filter_input(INPUT_POST, 'asunto', FILTER_SANITIZE_STRING);
-$mensaje = filter_input(INPUT_POST, 'mensaje', FILTER_SANITIZE_STRING);
-
-// Validaciones Compruebo que no falte información esencial, como un guardia que revisa documentos incompletos
-if (empty($nombre) || empty($email) || empty($mensaje)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios']);
-    exit;
-}
-//Verifico que el email tenga un formato correcto
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Email no válido']);
-    exit;
-}
-
-// Configurar PHPMailer
-$mail = new PHPMailer(true);
+require __DIR__ . '/vendor/autoload.php';
 
 try {
-    // 1. Configuración SMTP Simple Mail Transfer Protocol)
-    //"Preparo el servicio de correo con todos los datos de conexión segura
+    // Validar método de solicitud
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Método no permitido', 405);
+    }
+
+    // Validar token CSRF
+    if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || 
+        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        throw new Exception('Token CSRF inválido', 403);
+    }
+
+    // Cargar variables de entorno
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->safeLoad();
+
+    // Validar configuración SMTP
+    $requiredEnvVars = ['SMTP_USER', 'SMTP_PASS', 'MAIL_TO'];
+    foreach ($requiredEnvVars as $var) {
+        if (empty($_ENV[$var])) {
+            throw new Exception("Configuración SMTP incompleta: falta $var");
+        }
+    }
+
+    // Validar campos del formulario
+    $requiredFields = ['nombre', 'email', 'asunto', 'mensaje'];
+    foreach ($requiredFields as $field) {
+        if (empty($_POST[$field])) {
+            throw new Exception("El campo $field es requerido");
+        }
+    }
+
+    // Sanitizar datos
+    $nombre = htmlspecialchars($_POST['nombre'], ENT_QUOTES, 'UTF-8');
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $asunto = htmlspecialchars($_POST['asunto'], ENT_QUOTES, 'UTF-8');
+    $mensaje = htmlspecialchars($_POST['mensaje'], ENT_QUOTES, 'UTF-8');
+
+    // Validar email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Exception("El email proporcionado no es válido");
+    }
+
+    // Configurar PHPMailer
+    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
+    $mail->Host = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = getenv('MAIL_USERNAME');
-$mail->Password = getenv('MAIL_PASSWORD');
- // Contraseña de aplicación para permitir que programas o aplicaciones accedan a tu cuenta de forma segura, sin usar tu contraseña principal.
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;//El puerto 587 es el puerto estándar para el envío de correos con envío seguro mediante STARTTLS.
-    $mail->CharSet = 'UTF-8';
-    $mail->SMTPDebug = 3; // muestra todo lo que ocurre detrás de escenas cuando intentas enviar un correo.
+    $mail->Username = $_ENV['SMTP_USER'];
+    $mail->Password = $_ENV['SMTP_PASS'];
+    $mail->SMTPSecure = $_ENV['SMTP_SECURE'] ?? 'tls';
+    $mail->Port = $_ENV['SMTP_PORT'] ?? 587;
+    
+    // Solo en desarrollo
+    if ($_ENV['APP_ENV'] === 'development') {
+        $mail->SMTPDebug = 2;
+        $mail->Debugoutput = function($str, $level) {
+            file_put_contents('mail_debug.log', date('[Y-m-d H:i:s]')." [$level] $str\n", FILE_APPEND);
+        };
+    }
 
-    // 2. Configurar remitente y destinatario
-    $mail->setFrom($email, $nombre); // Email del formulario
-    $mail->addAddress('kheniavalos@gmail.com'); // Tu email de destino
-    $mail->addReplyTo($email, $nombre); // Para responder al cliente
+    // Configurar remitente y destinatario
+    $mail->setFrom($_ENV['SMTP_USER'], $_ENV['MAIL_FROM_NAME'] ?? 'Formulario de Contacto');
+    $mail->addAddress($_ENV['MAIL_TO']);
+    $mail->addReplyTo($email, $nombre);
 
-    // 3. Contenido del correo
-    $mail->isHTML(true);
-    $mail->Subject = mb_encode_mimeheader("Contacto: $asunto_form", 'UTF-8');
+    // Asunto y cuerpo del mensaje
+    $mail->Subject = "Nuevo mensaje de contacto: $asunto";
+    
     $mail->Body = "
-        <h2>Nuevo mensaje de contacto</h2>
+        <h1>Nuevo mensaje de contacto</h1>
         <p><strong>Nombre:</strong> $nombre</p>
         <p><strong>Email:</strong> $email</p>
-        <p><strong>Asunto:</strong> $asunto_form</p>
+        <p><strong>Asunto:</strong> $asunto</p>
         <p><strong>Mensaje:</strong></p>
-        <p>".nl2br(htmlspecialchars($mensaje))."</p>
+        <p>".nl2br($mensaje)."</p>
+        <hr>
+        <p>Enviado el ".date('d/m/Y H:i:s')."</p>
     ";
-    $mail->AltBody = strip_tags($mensaje);
+    
+    $mail->AltBody = strip_tags("
+        Nuevo mensaje de contacto:
+        Nombre: $nombre
+        Email: $email
+        Asunto: $asunto
+        Mensaje:
+        $mensaje
+        Enviado el ".date('d/m/Y H:i:s')
+    );
 
-    // 4. Enviar y verificar
-    //ntento enviar el correo y, si tiene éxito, devuelvo un mensaje positivo; si falla, lanzo un err
+    // Enviar email
+    ob_end_clean();
+    
     if ($mail->send()) {
-        ob_clean();
         echo json_encode([
             'success' => true,
-            'message' => '¡Mensaje enviado! Gracias por contactarnos. Te responderemos en 24-48 horas.'
+            'message' => '¡Gracias por contactarnos! Te responderemos pronto.'
         ]);
-        exit;
+    } else {
+        throw new Exception("Error al enviar el mensaje: ".$mail->ErrorInfo);
     }
-    throw new Exception('Error en el envío');
 
 } catch (Exception $e) {
-    error_log('Error PHPMailer: ' . $e->getMessage() . ' - ' . ($mail->ErrorInfo ?? ''));
-    ob_clean();
-    http_response_code(500);
+    ob_end_clean();
+    http_response_code($e->getCode() >= 400 ? $e->getCode() : 500);
     echo json_encode([
         'success' => false,
-        'message' => 'Error al enviar el mensaje. Por favor, contáctanos por teléfono.'
+        'message' => $e->getMessage()
     ]);
-    exit;
+    error_log('Contact Form Error: '.$e->getMessage());
 }
-?>

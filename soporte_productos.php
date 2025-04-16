@@ -8,6 +8,11 @@ if (!isset($_SESSION['carrito'])) {
 
 $carrito = $_SESSION['carrito'];
 
+// Generar token CSRF (SOLUCIÓN AL ERROR)
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Función para calcular el total
 function calcularTotal($carrito) {
     $total = 0;
@@ -56,7 +61,6 @@ $conexion->close();
     <link rel="stylesheet" href="stylesoport.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    
 </head>
 <body>
     <header>
@@ -99,7 +103,7 @@ $conexion->close();
                 <h3>Chat de Soporte</h3>
                 <p><strong>Disponible:</strong> Lunes a Viernes, 8:00 AM - 8:00 PM</p>
                 <p>Asistencia en tiempo real para problemas con productos</p>
-                <button class="btn">Iniciar Chat</button>
+                <button class="btnc">Iniciar Chat</button>
             </div>
         </section>
         
@@ -107,7 +111,10 @@ $conexion->close();
         <section class="contact-form">
             <h2>Formulario de Soporte para Productos</h2>
             <p>Por favor completa este formulario para recibir asistencia sobre nuestros productos. Incluye el número de serie o modelo si es aplicable.</p>
-            <form action="procesar_contacto.php" method="POST" id="contactForm">
+            <form id="contactForm">
+                <!-- CAMPO AÑADIDO PARA SOLUCIONAR EL ERROR CSRF -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES); ?>">
+                
                 <div class="form-group">
                     <label for="nombre">Nombre Completo</label>
                     <input type="text" id="nombre" name="nombre" class="form-control" required>
@@ -134,11 +141,9 @@ $conexion->close();
                     <textarea id="mensaje" name="mensaje" class="form-control" placeholder="Por favor describe el problema con tu producto, incluyendo modelo y número de serie si es posible" required></textarea>
                 </div>
                 
-                <button type="submit" class="btn">Enviar Solicitud de Soporte</button>
+                <button type="submit" class="btnc">Enviar Solicitud de Soporte</button>
             </form>
         </section>
-        
-       
     </main>
 
     <?php include 'footer.php'; ?>
@@ -146,7 +151,6 @@ $conexion->close();
     <!-- Script para mostrar mensaje emergente -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Validación del formulario
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             

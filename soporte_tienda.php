@@ -1,37 +1,21 @@
 <?php
+// Iniciar sesión al principio del archivo
 session_start();
 
-// Inicializar carrito si no existe
-//if (!isset($_SESSION['carrito'])) {
- //   $_SESSION['carrito'] = [];
-//}
-
-//$carrito = $_SESSION['carrito'];
-
-// Función para calcular el total
-//function calcularTotal($carrito) {
-  //  $total = 0;
-   // foreach ($carrito as $producto) {
-   //     $precio = isset($producto['precio']) ? $producto['precio'] : 0;
-    //    $cantidad = isset($producto['cantidad']) ? $producto['cantidad'] : 1;
-    //    $total += $precio * $cantidad;
- //   }
- //   return number_format($total, 2);
-//}
-
-
-
+// Generar token CSRF solo si no existe
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contáctenos -ONEXA</title>
+    <title>Contáctenos - ONEXA</title>
     <link rel="stylesheet" href="stylesoport.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    
 </head>
 <body>
     <header>
@@ -49,7 +33,7 @@ session_start();
         <section class="contact-section">
             <div class="contact-card">
                 <div class="contact-icon">
-                    <i class="fas fa-phone-alt"></i> <!-- Icono de teléfono de Font Awesome -->
+                    <i class="fas fa-phone-alt"></i>
                 </div>
                 <h3>Soporte Telefónico</h3>
                 <p><strong>Línea directa:</strong> 1-800-123-4567</p>
@@ -79,10 +63,13 @@ session_start();
         <!-- Contact Form -->
         <section class="contact-form">
             <h2>Envíanos un Mensaje</h2>
-            <form action="procesar_contacto.php" method="POST" id="contactForm">   <!-- envia los datos a este script, lo procesa con id unico -->
+            <form id="contactForm">
+                <!-- Campo oculto con el token CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES) ?>">
+                
                 <div class="form-group">
                     <label for="nombre">Nombre Completo</label>
-                    <input type="text" id="nombre" name="nombre" class="form-control" required><!-- el required es para campos obligatorios -->
+                    <input type="text" id="nombre" name="nombre" class="form-control" required>
                 </div>
                 
                 <div class="form-group">
@@ -92,18 +79,17 @@ session_start();
                 
                 <div class="form-group">
                     <label for="asunto">Asunto</label>
-                    <select id="asunto" name="asunto" class="form-control" required><!-- crea el menu desplegable  -->
-                        <option value="">Seleccione un asunto</option><!-- opciones disponivbles  -->
-                        <option value="soporte Tecnico">Soporte Técnico</option>
-                        <option value="Consukta de ventas">Consulta de Ventas</option>
-                     
-                        <option value="otro">Otro</option>
+                    <select id="asunto" name="asunto" class="form-control" required>
+                        <option value="">Seleccione un asunto</option>
+                        <option value="Soporte Técnico">Soporte Técnico</option>
+                        <option value="Consulta de Ventas">Consulta de Ventas</option>
+                        <option value="Otro">Otro</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="mensaje">Mensaje</label>
-                    <textarea id="mensaje" name="mensaje" class="form-control" required></textarea>
+                    <textarea id="mensaje" name="mensaje" class="form-control" rows="5" required></textarea>
                 </div>
                 
                 <button type="submit" class="btnc">Enviar Mensaje</button>
@@ -116,54 +102,55 @@ session_start();
     <!-- Script para mostrar mensaje emergente -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Validación del formulario
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validación básica
-            const nombre = document.getElementById('nombre').value;//.value: Obtiene el valor actual que el usuario ha ingresado en ese campo
-            const email = document.getElementById('email').value;
-            const mensaje = document.getElementById('mensaje').value;
-            
-            if (!nombre || !email || !mensaje) {
-                Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
-                return;//i el nombre está vacío o el email está vacío o el mensaje está vacío, entonces detiene el proceso
-            }
-            
-            // Envío del formulario
-            const formData = new FormData(this);//FormData: Objeto que recoge todos los datos del formulario
-            
-            fetch('procesar_contacto.php', {//fetch: API moderna para hacer peticiones HTTP
-                method: 'POST',
-                body: formData//onfigura el método POST y envía formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({//Muestra mensaje de éxito con SweetAlert si data.success es true para mejor estilo
-                        title: '¡Mensaje enviado!',
-                        text: 'Gracias por contactar a ONEXA. Uno de nuestros representantes se pondrá en contacto contigo dentro de 24 a 48 horas.',
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                    });
-                    document.getElementById('contactForm').reset();//borra los datos ingresados en el form 
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.message || 'Hubo un error al enviar el mensaje. Por favor inténtalo nuevamente.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
+            // Mostrar loader
+            Swal.fire({
+                title: 'Enviando mensaje',
+                html: 'Por favor espera...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
-            })
-            .catch(error => {//catch: Captura cualquier error en la petición
+            });
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('procesar_contacto.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Verificar si la respuesta es JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error('Respuesta no válida del servidor');
+                }
+                
+                const data = await response.json();
+                
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Error al enviar el mensaje');
+                }
+                
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+                this.reset();
+            } catch (error) {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Hubo un problema al enviar el mensaje. Por favor inténtalo nuevamente.',
+                    text: error.message,
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
-            });
+                console.error('Error:', error);
+            }
         });
     </script>
 </body>
