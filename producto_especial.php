@@ -16,8 +16,8 @@ if ($result_coleccion) {
             'id' => $row['id'],
             'nombre' => htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8'),
             'descripcion' => htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'),
-            'descripcion2' => isset($row['descripcion2']) ? htmlspecialchars($row['descripcion2'], ENT_QUOTES, 'UTF-8') : '',//si no hay segundades lo deja vacio
-            'precio' => (float)$row['precio'],//convierte el precio en decimal 
+            'descripcion2' => isset($row['descripcion2']) ? htmlspecialchars($row['descripcion2'], ENT_QUOTES, 'UTF-8') : '',
+            'precio' => (float)$row['precio'],
             'imagen' => htmlspecialchars($row['imagen'])
         ];
     }
@@ -72,16 +72,16 @@ $conexion->close();
     <div class="recomendados-grid">
         <?php foreach ($coleccion as $producto): ?><!-- por cada lista de productos( se encuentra en coleccion)haz lo siguiente -->
             <div class="recomendado-item">
-                <img src="<?= $producto['imagen'] ?>" alt="<?= $producto['nombre'] ?>" loading="lazy"><!-- lazy solo al hacer scroll para que cargue mas rapido-->
+                <img src="<?= $producto['imagen'] ?>" alt="<?= $producto['nombre'] ?>" loading="lazy">
                 <div class="recomendado-info">
                     <h3><?= $producto['nombre'] ?></h3>
-                    <p class="recomendado-price">$<?= number_format($producto['precio'], 2) ?></p><!-- agrega el formato para el precio-->
+                    <p class="recomendado-price">$<?= number_format($producto['precio'], 2) ?></p>
                     <div class="recomendado-actions">
                         <a href="detalle_producto.php?id=<?= $producto['id'] ?>" class="ver-mas-btn">Ver detalles</a><!-- me lleva al producto por el id-->
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?><!-- cierra el por cada lista de productos-->
+        <?php endforeach; ?>
     </div>
 </div>
 

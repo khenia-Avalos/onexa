@@ -2,14 +2,14 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);//Activa mostrar todos los errores de PHP para desarrollo
 
-// Manejar peticiones AJAX primero
-if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petición POST
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();//Inicia la sesión si no estaba activa
+        session_start();
     }
     
-    if (!isset($_SESSION['carrito'])) {//Detecta acciones específicas para el carritos
-        $_SESSION['carrito'] = [];//Crea el carrito en sesión si no existe
+    if (!isset($_SESSION['carrito'])) {
+        $_SESSION['carrito'] = [];
     }
     
     $respuesta = ['success' => false];
@@ -17,14 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
     try {
         if (isset($_POST['accion_carrito'])) {
             switch ($_POST['accion_carrito']) {
-                case 'actualizar'://Recibe ID del producto y nueva cantidad Actualiza la cantidad en el carrito de sesión  Devuelve éxito
+                case 'actualizar'://Recibe ID del producto y nueva cantidad Actualiza la cantidad 
                     if (isset($_POST['id'], $_POST['cantidad']) && isset($_SESSION['carrito'][$_POST['id']])) {
                         $_SESSION['carrito'][$_POST['id']]['cantidad'] = (int)$_POST['cantidad'];
                         $respuesta = ['success' => true];
                     }
                     break;
                     
-                case 'eliminar'://Recibe ID del producto a eliminar Quita el producto del carrito Devuelve éxito
+                case 'eliminar'://Recibe ID del producto a eliminar Quita el producto 
                     if (isset($_POST['id']) && isset($_SESSION['carrito'][$_POST['id']])) {
                         unset($_SESSION['carrito'][$_POST['id']]);
                         $respuesta = ['success' => true];
@@ -32,14 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
                     break;
             }
         } elseif (isset($_POST['procesar_pago'])) {//Detecta cuando se envía el formulario de pago
-            if (empty($_SESSION['carrito'])) {//Rechaza si el carrito está vacío
+            if (empty($_SESSION['carrito'])) {
                 throw new Exception('El carrito está vacío');
             }
             
             $camposRequeridos = ['firstName', 'lastName', 'email', 'address', 'city', 'state', 'postalCode', 'phone'];
             foreach ($camposRequeridos as $campo) {
                 if (empty($_POST[$campo])) {
-                    throw new Exception("El campo $campo es requerido");//Valida que todos los campos obligatorios estén completos
+                    throw new Exception("El campo $campo es requerido");
                 }
             }
             
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $db->beginTransaction();
 
-                // 1. Insertar o actualizar cliente
+              
                 //Guarda los datos del cliente o los actualiza si ya existe
                 $stmtCliente = $db->prepare("INSERT INTO clientes 
                     (nombre, apellido, email, direccion, ciudad, provincia, codigo_postal, telefono) 
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
                     provincia = VALUES(provincia),
                     codigo_postal = VALUES(codigo_postal),
                     telefono = VALUES(telefono)");
-                    //Usa marcadores de posición (?) para seguridad contra inyección SQ ,ON DUPLICATE KEY UPDATE actualiza el registro si el email ya existe
+                  
                 
                 $stmtCliente->execute([
                     $_POST['firstName'],
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
                     $_POST['state'],
                     $_POST['postalCode'],
                     $_POST['phone']
-                ]);//Ejecuta la consulta con los datos del formulario ,Los valores se asignan en orden a los marcadores de posición
+                ]);
                 
 
                 $id_cliente = $db->lastInsertId();
@@ -82,13 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
                     $id_cliente = $stmt->fetchColumn();
                 }//Intenta obtener el ID del cliente insertado Si es 0 (cuando se actualiza un cliente existente), busca el ID usando el email
 
-                // 2. Insertar pedido
-                //Calcula el total del pedido sumando precio × cantidad de cada producto ,Usa operador null coalescente (??) para valores por defecto
+             
+             
                 $total = 0;
                 foreach ($_SESSION['carrito'] as $producto) {
                     $total += ($producto['precio'] ?? 0) * ($producto['cantidad'] ?? 1);
                 }
-//Inserta el pedido principal con estado "pendiente"
+
 
 //Guarda el ID generado para usar en los detalles
                 $stmtPedido = $db->prepare("INSERT INTO pedidos 
@@ -113,22 +113,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Detecta cuando llega una petició
                 }
 //Prepara consulta para insertar detalles del pedido
 
-//Por cada producto en el carrito, inserta una línea con:
 
-//ID del pedido principal
-
-//ID y nombre del producto
-
-//Cantidad y precio unitario
                 $db->commit();
 
                 $_SESSION['ultimo_pedido'] = $id_pedido;
                 $_SESSION['carrito'] = [];
-                //Confirma la transacción si todo salió bien
+               
 
-//Guarda el ID del pedido en sesión
 
-//Vacía el carrito
                 $respuesta = [
                     'success' => true,
                     'id_pedido' => $id_pedido,
@@ -159,7 +151,7 @@ error_reporting(E_ALL);//Hace que PHP reporte TODOS los errores
 ini_set('display_errors', 1);
 
 if (!isset($_SESSION['carrito'])) {
-    $_SESSION['carrito'] = [];//Verifica si no existe la variable de sesión 'carrito' Si no existe, la inicializa como un array vacío
+    $_SESSION['carrito'] = [];
 }
 
 $carrito = $_SESSION['carrito'];
@@ -171,7 +163,6 @@ function calcularTotal($carrito) {
     }
     return number_format($total, 2);
 }//Recibe el array del carrito como parámetro .Inicializa $total en 0,Recorre cada producto en el carrito:Suma al total el precio del producto multiplicado por su cantidad
-//Usa el operador ?? para valores por defecto (0 para precio, 1 para cantidad) y Devuelve el total formateado con 2 decimales usando number_format()
 
 function obtenerProductosRecomendados() {
     $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
@@ -283,14 +274,14 @@ $recomendados = obtenerProductosRecomendados();
                         <img src="<?= htmlspecialchars($producto['imagen'] ?? 'https://via.placeholder.com/100') ?>" 
                              alt="<?= htmlspecialchars($producto['nombre'] ?? 'Producto') ?>" 
                              class="cart-item-image">
-                             <!--Usa htmlspecialchars para seguridad contra XSS ,Proporciona una imagen por defecto si no hay una específica-->
+                             <!--Usa htmlspecialchars para seguridad contra XSS ,-->
                         
                         <div class="cart-item-details">
                             <h3 class="cart-item-title"><?= htmlspecialchars($producto['nombre'] ?? 'Producto sin nombre') ?></h3>
                             <p><?= htmlspecialchars($producto['descripcion'] ?? 'Sin descripción') ?></p>
                             <p class="cart-item-price">$<?= number_format($producto['precio'] ?? 0, 2) ?></p>
                             
-<!--Muestra nombre, descripción y precio,Formatea el precio con 2 decimales-->
+
 
                             <div class="cart-item-actions">
                                 <select class="quantity-select cantidad" data-id="<?= htmlspecialchars($id) ?>">
@@ -341,10 +332,9 @@ $recomendados = obtenerProductosRecomendados();
 
 <?php include 'footer.php'; ?>
 <script>
-// Variable global para el carrito
+
 const carritoActual = <?= json_encode($carrito) ?>;
 
-// Función para calcular y actualizar el total en la UI
 function actualizarTotal() {
     const total = Object.values(carritoActual).reduce((sum, item) => {
         return sum + (item.precio || 0) * (item.cantidad || 1);
@@ -354,7 +344,7 @@ function actualizarTotal() {
     return total;
 }
 
-// Función para actualizar el carrito en el servidor
+
 async function manejarAccionCarrito(accion, datos = {}) {
     try {
         const formData = new FormData();
@@ -411,7 +401,7 @@ document.querySelectorAll('.quantity-select').forEach(select => {
             const precioUnitario = carritoActual[id].precio || 0;
             const oldCantidad = carritoActual[id].cantidad || 1;
             
-            // Actualizar localmente primero para mejor UX
+            
             carritoActual[id].cantidad = cantidad;
             
             // Calcular diferencia para actualizar el total
@@ -420,14 +410,14 @@ document.querySelectorAll('.quantity-select').forEach(select => {
             const currentTotal = parseFloat(totalElement.textContent.replace('Total: $', ''));
             const newTotal = currentTotal + diferencia;
             
-            // Actualizar el total en la UI inmediatamente
+            
             totalElement.textContent = `Total: $${newTotal.toFixed(2)}`;
             
-            // Enviar la actualización al servidor
+         
             const resultado = await manejarAccionCarrito('actualizar', {id, cantidad});
             
             if (!resultado.success) {
-                // Revertir cambios si falla
+         
                 carritoActual[id].cantidad = oldCantidad;
                 totalElement.textContent = `Total: $${currentTotal.toFixed(2)}`;
                 this.value = oldCantidad;
@@ -447,8 +437,8 @@ document.querySelectorAll('.eliminar').forEach(button => {
     button.addEventListener('click', async function() {
         const id = this.dataset.id;
         
-        // Mostrar confirmación antes de eliminar (opcional)
-        const confirmacion = await Swal.fire({//libreria de js para estilo del mensaje
+        // Mostrar confirmación antes de eliminar 
+        const confirmacion = await Swal.fire({
             title: '¿Eliminar producto?',
             text: "¿Estás seguro de que quieres eliminar este producto del carrito?",
             icon: 'warning',
@@ -470,7 +460,7 @@ document.querySelectorAll('.eliminar').forEach(button => {
             // Actualizar el total
             actualizarTotal();
             
-            // Mostrar notificación
+           
             Toastify({
                 text: "Producto eliminado",
                 duration: 2000,

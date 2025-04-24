@@ -1,5 +1,5 @@
 <?php
-// Conexión a la base de datos
+
 $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
@@ -329,7 +329,7 @@ $conexion->close();
         
         <div class="card">
             <div class="card-header">
-                <h3><i class='bx bxs-list-ul'></i> Listado de Pedidos</h3><!-- Pone un subtítulo (h3) con icono de lista (bxs-list-ul).-->
+                <h3><i class='bx bxs-list-ul'></i> Listado de Pedidos</h3>
                 <div>
                     <button class="btn btn-primary">
                         <i class='bx bxs-download'></i> Exportar
@@ -353,7 +353,7 @@ $conexion->close();
                             <tbody>
                                 <?php foreach ($pedidos as $pedido): ?><!--Por cada pedido en la lista $pedidos, repite este bloque-->
                                     <tr class="pedido-row">
-                                        <td>#<?= htmlspecialchars($pedido['id_pedido']) ?></td><!--htmlspecialchars(): Convierte caracteres especiales a formato seguro (evita errores).-->
+                                        <td>#<?= htmlspecialchars($pedido['id_pedido']) ?></td>
                                         <td><?= htmlspecialchars($pedido['fecha_formateada']) ?></td>
                                         <td>
                                             <span class="toggle-details"><?= htmlspecialchars($pedido['cliente_completo']) ?></span>
@@ -361,7 +361,7 @@ $conexion->close();
                                         <td>$<?= number_format($pedido['total_pedido'], 2) ?></td>
                                         <td>
                                             <?php 
-                                            $badge_class = '';//los estados cambian el color del fondo
+                                            $badge_class = '';
                                             if ($pedido['estado_pedido'] == 'completado') {
                                                 $badge_class = 'badge-success';
                                             } elseif ($pedido['estado_pedido'] == 'pendiente') {
@@ -370,7 +370,7 @@ $conexion->close();
                                                 $badge_class = 'badge-danger';
                                             }
                                             ?>
-                                            <span class="badge <?= $badge_class ?>"><!--Aplica la clase de color según el estado.-->
+                                            <span class="badge <?= $badge_class ?>">
                                                 <?= ucfirst(htmlspecialchars($pedido['estado_pedido'])) ?>
                                             </span>
                                         </td>
@@ -455,7 +455,7 @@ $conexion->close();
                         </table>
                     <?php else: ?>
                         <div class="no-data">
-                            <i class='bx bxs-inbox'></i><!--Si no hay pedidos (else), muestra este mensaje con icono de caja vacía (bxs-inbox)-->
+                            <i class='bx bxs-inbox'></i>
                             <h3>No hay pedidos registrados</h3>
                             <p>No se encontraron pedidos en el sistema</p>
                         </div>
@@ -474,21 +474,21 @@ $conexion->close();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Mostrar/ocultar detalles del pedido
-        document.querySelectorAll('.toggle-details').forEach(element => {//Busca todos los elementos de la página que tengan la clase toggle-details (los nombres de clientes) y por cada uno, haz lo siguiente..
+        document.querySelectorAll('.toggle-details').forEach(element => { 
             element.addEventListener('click', function() {//A cada nombre de cliente, añádele un detector de clics, para que cuando lo clicks, ejecute esta función
                 const detailsRow = this.closest('tr').nextElementSibling;
-                detailsRow.classList.toggle('active');//Cambia el estado de la clase active en la fila de detalles:Si la tiene, la quita (oculta los detalles)
-//Si no la tiene, la añade (muestra los detalles)
+                detailsRow.classList.toggle('active');
+
             });
         });
         
         // Funcionalidad para los botones de acción
-        document.querySelectorAll('.btn-primary').forEach(button => {//Busca todos los botones con clase btn-primary (los botones azules) y por cada uno, haz esto
-            button.addEventListener('click', function() {//A cada botón, añádele un detector para cuando se haga clic en él
+        document.querySelectorAll('.btn-primary').forEach(button => { 
+            button.addEventListener('click', function() {
                 const action = this.querySelector('i').className;//Guarda las clases del icono en action (ej: bxs-edit)
                 
-                if (action.includes('bxs-edit')) {//Si las clases del icono incluyen bxs-edit (es el icono de lápiz), entonces..
-                    Swal.fire({//Muestra una ventana emergenteññ
+                if (action.includes('bxs-edit')) {
+                    Swal.fire({
                         title: 'Editar Pedido',
                         text: 'Aquí se abriría el formulario para editar el pedido',
                         icon: 'info',

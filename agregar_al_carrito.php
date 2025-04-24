@@ -6,10 +6,10 @@ require_once 'includes/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['cantidad'])) {//verifica que Existan los parámetros id y cantidad en los datos enviados
     $producto_id = (int)$_POST['id'];
-    $cantidad = (int)$_POST['cantidad'];//Convierte los valores a enteros 
+    $cantidad = (int)$_POST['cantidad'];
 
     try {
-        // Obtener producto con todos los campos necesarios
+        // Obtener producto
         $stmt = $conn->prepare("
             (SELECT id, nombre, precio, imagen, descripcion FROM productos WHERE id = ?)
             UNION
@@ -18,13 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['cantida
             
         ");
 
-        //Busca en la tabla productos
-
-//También busca en recomendados (productos destacados)
-
-//UNION combina resultados
-
-//LIMIT 1 asegura un solo resultado
+       
         $stmt->bind_param("ii", $producto_id, $producto_id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -39,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['cantida
             $_SESSION['carrito'] = [];
         }
 
-        // Agregar/actualizar en sesión con todos los campos
-        //Si el producto no está en el carrito, lo agrega con todos sus datos e incrementa cantidad si si
+        //Si el producto no está en el carrito, lo agrega 
         if (!isset($_SESSION['carrito'][$producto_id])) {
             $_SESSION['carrito'][$producto_id] = [
                 'id' => $producto_id,
@@ -53,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['cantida
         }
         $_SESSION['carrito'][$producto_id]['cantidad'] += $cantidad;
 
-        // Respuesta exitosa con todos los datos necesarios
+       //respuesta succ
         echo json_encode([
             'success' => true,
             'totalItems' => array_sum(array_column($_SESSION['carrito'], 'cantidad')),
@@ -83,9 +76,5 @@ function calcularTotalCarrito($carrito) {
 }
 //Recorre todos los productos del carrito
 
-//Multiplica precio por cantidad de cada uno
 
-//Suma todos los subtotales
-
-//Formatea el total con 2 decimales
 ?>

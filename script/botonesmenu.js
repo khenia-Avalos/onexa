@@ -1,4 +1,4 @@
-console.log('cargando busqueda'); // Solo para desarrolladores
+console.log('cargando busqueda'); 
 
 
 //CODIGO DE FUNCIONALIDAD DEL BOTON LUPA , con memoria al navegar entre paginas usando LOCALSTORAGE EN LUGAR DE LOCATION RELOAD 
@@ -10,29 +10,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const overlay = document.querySelector(".overlay");
     const searchClose = document.querySelector(".search-close");
 
-    // Restaurar el estado de la búsqueda al cargar la página
+
     const busquedaAbierta = localStorage.getItem('busquedaAbierta') === 'true';
     if (busquedaAbierta) {
-        overlay.style.display = "flex"; // Mostrar la barra de búsqueda si estaba abierta
+        overlay.style.display = "flex"; 
     }
 
     // Función para abrir la barra de búsqueda
     lupaButton.addEventListener("click", function () {
-        overlay.style.display = "flex"; // Mostrar la capa gris y barra de búsqueda
-        localStorage.setItem('busquedaAbierta', 'true'); // Guardar el estado
+        overlay.style.display = "flex"; 
+        localStorage.setItem('busquedaAbierta', 'true'); 
     });
 
     // Función para cerrar la barra de búsqueda
     searchClose.addEventListener("click", function () {
-        overlay.style.display = "none"; // Ocultar la capa y la barra de búsqueda
-        localStorage.setItem('busquedaAbierta', 'false'); // Guardar el estado
+        overlay.style.display = "none"; 
+        localStorage.setItem('busquedaAbierta', 'false'); 
     });
 
     // Cerrar la búsqueda si se hace clic fuera del contenedor de búsqueda
     overlay.addEventListener("click", function (event) {
         if (event.target === overlay) {
-            overlay.style.display = "none"; // Ocultar la capa y barra de búsqueda
-            localStorage.setItem('busquedaAbierta', 'false'); // Guardar el estado
+            overlay.style.display = "none"; 
+            localStorage.setItem('busquedaAbierta', 'false');
         }
     });
 });
@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var swiper = new Swiper(".mySwiper", {
         effect: "coverflow", //efecto 3d 
         grabCursor: true, //cambia cursor al pasar sobre las imagenes 
-        centeredSlides: true, //centra la diapositiva
-        loop: true, //hace que vuelva al inicio al finalizar con un producto
-        slidesPerView: "auto", //muestra varias cards segun el tamaño
+        centeredSlides: true, 
+        loop: true, 
+        slidesPerView: "auto", 
         coverflowEffect: {
             rotate: 0,
             stretch: 0,

@@ -99,7 +99,7 @@
 <body>
     <header>
         <?php 
-        // Asegurarnos que la sesión está iniciada
+   
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -135,22 +135,22 @@
     </main>
 
     <script>
-    // Función mejorada para actualizar el contador
+
     function updateCartCounter() {
-        // Crear una solicitud AJAX pura (sin jQuery)
-        const xhr = new XMLHttpRequest();//manda a llamar al servidor 
-        xhr.open('GET', window.location.href, true);//"Dame (GET) la misma página donde estoy (window.location.href), pero hazlo en segundo plano (true)"
+      
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', window.location.href, true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Cache-Control', 'no-cache');//no me des información vieja (no-cache), quiero datos frescos"
 
 
         
         xhr.onload = function() {
-            if (this.status === 200) {//Si todo salió bien (código 200), procesemos la respuesta
+            if (this.status === 200) {
                 // Crear un parser de HTML para extraer el contador
                 const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(this.responseText, 'text/html');//omo el HTML que me enviaste y lo convierto en un documento que puedo analizar
-                const counterElement = htmlDoc.getElementById('cart-counter');//"Dónde está ese numerito que muestra cuántos productos hay en el carrito
+                const htmlDoc = parser.parseFromString(this.responseText, 'text/html');
+                const counterElement = htmlDoc.getElementById('cart-counter');
                 
                 if (counterElement) {
                     // Actualizar solo si el valor cambió
@@ -162,17 +162,17 @@
             }
         };
         
-        xhr.send();//k, ahora sí haz la llamada que preparé
+        xhr.send();
     }
 
     // Actualizar inmediatamente al cargar
     document.addEventListener('DOMContentLoaded', function() {
-        updateCartCounter();//En cuanto la página esté lista, chequea el carrito
+        updateCartCounter();
         
         // Actualizar periódicamente (cada 3 segundos)
-        setInterval(updateCartCounter, 3000);//Y sigue chequeando cada 3 segundos (como un reloj
+        setInterval(updateCartCounter, 3000);//Y sigue chequeando cada 3 segundos
         
-        // Actualizar cuando la página gana foco
+       
         window.addEventListener('focus', updateCartCounter);
     });
     </script>

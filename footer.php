@@ -2,7 +2,7 @@
         <div class="container">
             <div class="sec about">
                 <h2>About us</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia sunt animi rem exercitationem natus? Sit aperiam soluta enim rem, voluptatum ea et eius, assumenda sint distinctio ullam voluptas autem pariatur?</p>
+                <p>Onexa Electronics es una empresa dedicada al desarrollo y comercialización de soluciones tecnológicas de vanguardia. Nos especializamos en electrónica de consumo, automatización y dispositivos inteligentes, ofreciendo innovación, calidad y confianza en cada producto.</p>
                 <ul class="socila-icon">
                     <li><a href="#"><i class='bx bxl-facebook'></i></a></li>
                     <li><a href="#"><i class='bx bxl-linkedin'></i></a></li>

@@ -1,5 +1,5 @@
 <?php
-session_start();//reanuda la coneccion o sesion de un usuario
+session_start();
 require_once 'includes/conexion.php';
 require_once 'carrito_functions.php';//ESTE NO 
 

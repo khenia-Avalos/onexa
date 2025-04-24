@@ -1,6 +1,17 @@
+<?php
+session_start();
+
+// Inicializar carrito si no existe
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
+}
+
+$carrito = $_SESSION['carrito'];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Onexa - Revolución Sonora</title>

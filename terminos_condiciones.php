@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Inicializar carrito si no existe
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
+}
+
+$carrito = $_SESSION['carrito'];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,6 +19,7 @@
 </head>
 <body>
     <header>
+        
         <?php include 'partesup.php'; ?>
     </header>
 

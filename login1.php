@@ -1,12 +1,12 @@
 <?php
-// Iniciar sesión al principio del archivo
+
 session_start();//Esto inicia o continúa una sesión en el servidor, permitiendo guardar información del usuario entre páginas.
 
 
-// Inicializar carrito si no existe
+
 $_SESSION['carrito'] = $_SESSION['carrito'] ?? [];
 
-// Obtener cantidad de items en el carrito Cuenta cuántos productos hay en el carrito y guarda ese número.
+
 $cart_count = count($_SESSION['carrito']);
 ?>
 <!DOCTYPE html>
@@ -15,9 +15,9 @@ $cart_count = count($_SESSION['carrito']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - ONEXA</title>
-    <!-- Font Awesome -->
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SweetAlert2 -->
+  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         * {
@@ -233,9 +233,9 @@ $cart_count = count($_SESSION['carrito']);
         </div>
     </div>
 
-    <!-- jQuery -->
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- SweetAlert2 -->
+ 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -243,10 +243,9 @@ $cart_count = count($_SESSION['carrito']);
         // Variable para almacenar el último conteo
         let lastCartCount = <?php echo $cart_count; ?>;
         
-        // Función para actualizar el contador
-        //Petición AJAX: Hace una solicitud HTTP GET a la misma página.
+       
 
-//headers Indica que es una petición AJAX y evita el caché
+
         function updateCartCounter() {
             $.ajax({
                 url: window.location.href,
@@ -255,12 +254,11 @@ $cart_count = count($_SESSION['carrito']);
                     'X-Requested-With': 'XMLHttpRequest',
                     'Cache-Control': 'no-cache'
                 },
-                success: function(data) {//Cuando la petición al servidor sale bien, haz esto con la respuesta (data)"
-                    // Crear un elemento temporal para parsear la respuesta
-                    const tempDiv = $('<div>').html(data);//rea un contenedor temporal invisible (un <div>) y métele todo el HTML que recibimos
+                success: function(data) {
+                    
+                    const tempDiv = $('<div>').html(data);
                     const newCounter = tempDiv.find('#cart-counter').text();
-                    //Busca en esa copia el elemento con ID 'cart-counter' y qué número tiene escrito
-                   //i encontró un número Y ese número es diferente al último que guardamos
+                    
                     if (newCounter && newCounter != lastCartCount) {
                         $('#cart-counter').text(newCounter);//entonces actualiza el número que ve el usuario en la página rea
                         lastCartCount = newCounter;//Y guarda este nuevo número como referencia para la próxima vez
@@ -273,14 +271,14 @@ $cart_count = count($_SESSION['carrito']);
         }
         
         // Actualizar cada 5 segundos
-        setInterval(updateCartCounter, 5000);//Cada 5000 milisegundos (5 segundos), revisa cuántos productos hay en el carrito
+        setInterval(updateCartCounter, 5000);//revisa cuántos productos hay en el carrito
 
-        // Manejar el formulario de login
+      
         $('#loginForm').on('submit', function(e) {
             e.preventDefault();//Cuando hagan clic en 'Ingresar', no envíes el formulario de la forma normal
             
             const $btn = $(this).find('button[type="submit"]');
-            $btn.html('<i class="fas fa-spinner fa-spin"></i> Verificando...').prop('disabled', true);//Cambia el botón para que muestre un icono girando y desactívalo para saber que esta procesando
+            $btn.html('<i class="fas fa-spinner fa-spin"></i> Verificando...').prop('disabled', true);
 
          
          
@@ -301,7 +299,7 @@ $cart_count = count($_SESSION['carrito']);
                     $('#error-message').text('Error de conexión').removeClass('d-none');
                 },
                 complete: function() {
-                    $btn.html('<i class="fas fa-sign-in-alt"></i> Ingresar').prop('disabled', false);//Siempre, al final, vuelve a poner el botón normal y activo
+                    $btn.html('<i class="fas fa-sign-in-alt"></i> Ingresar').prop('disabled', false);
                 }
             });
         });

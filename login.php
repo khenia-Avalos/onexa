@@ -2,14 +2,14 @@
 session_start();
 header('Content-Type: application/json');
 
-// Conexión directa (sin includes)
+
 $host = 'localhost';
 $dbname = 'tienda';
 $username = 'kheniali';
 $password = '123';
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);//"Intenta abrir la puerta a la base de datos con las credenciales"
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
 
     //"Le dice que muestre errores claros si algo falla"
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -21,12 +21,12 @@ try {
     $usuario = $_POST['usuario'] ?? '';
     $contrasena = $_POST['contrasena'] ?? '';
 
-    // Validación básica
+
     if (empty($usuario) || empty($contrasena)) {
         throw new Exception("Usuario y contraseña son obligatorios");
     }
 
-    // Consulta directa (sin funciones externas)
+   
     //Pregunta a la base: ¿Existe un usuario con este nombre o correo?
     $stmt = $conn->prepare("SELECT id, nombre_user, contrasena_user FROM usuarios WHERE nombre_user = ? OR correo_user = ?");
     $stmt->execute([$usuario, $usuario]);

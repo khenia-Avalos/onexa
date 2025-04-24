@@ -2,7 +2,7 @@
 session_start();
 require_once 'includes/conexion.php';
 
-// Obtener la categoría seleccionada (si existe)
+
 $categoria = isset($_GET['categoria']) ? $_GET['categoria'] : 'default';//Obtiene la categoría seleccionada desde la URL o usa 'default' si no se especifica
 
 // Definir rangos de IDs según la categoría
@@ -47,19 +47,16 @@ $rango = $rangos[$categoria] ?? $rangos['default'];
 $min_id = $rango['min'];
 $max_id = $rango['max'];
 
-// Conexión a la base de datos
+
 $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
 $conexion->set_charset("utf8mb4");
 
-// Consulta SQL con filtro por rango de IDs
 //--Busca en la tabla productos dentro de un rango específico de IDs
 
-//--Agrupa los resultados según varios criterios de similitud
 
-//--Para cada grupo, selecciona solo el ID más pequeño (MIN(id))
 $sql = "SELECT p.* 
         FROM productos p
         INNER JOIN (
@@ -75,10 +72,9 @@ $sql = "SELECT p.*
         WHERE p.id BETWEEN ? AND ?
         ORDER BY p.id ASC";
 //--Solo incluye productos cuyos IDs coincidan con los IDs mínimos de cada grupo
-//--Los parámetros (?) se reemplazan con valores reales cuando se ejecuta
-// Preparar la consulta con parámetros
+
 $stmt = $conexion->prepare($sql);
-$stmt->bind_param("iiii", $min_id, $max_id, $min_id, $max_id);//Protege contra inyecciones SQL usando parámetros vinculados
+$stmt->bind_param("iiii", $min_id, $max_id, $min_id, $max_id);
 $stmt->execute();
 $productos = $stmt->get_result();
 
@@ -89,7 +85,7 @@ if (!$productos) {
 // Procesamiento de productos (igual que antes)
 $productos_finales = [];
 while ($producto = $productos->fetch_assoc()) {
-    // Obtener imágenes adicionales
+   
     $stmt_img = $conexion->prepare("SELECT imagen FROM producto_imagenes WHERE producto_id = ? ORDER BY orden");
     $stmt_img->bind_param("i", $producto['id']);
     $stmt_img->execute();
@@ -135,8 +131,8 @@ $conexion->close();
     <div class="slider">
   <ul>
     <li><img id="sli" src="img/tele.png" alt=""></li>
-    <li><img id="sli" src="img/tele.png" alt=""></li>
-    <li><img id="sli" src="img/tele.png" alt=""></li>
+    <li><img id="sli" src="img/sonido.gif" alt=""></li>
+    <li><img id="sli" src="img/cambaner.png" alt=""></li>
   </ul>
 </div>
 
@@ -163,7 +159,7 @@ $conexion->close();
         <?php endforeach; ?>
     </div>
 
-    <!-- Modal dividido con descripción2 a la derecha -->
+ 
 <div class="modal">
     <div class="modal-content split-modal">
         <!-- Lado izquierdo (original) -->
@@ -197,7 +193,7 @@ $conexion->close();
     <div class="product-description2-container">
         <h3>Especificaciones:</h3>
         <div class="product-description2"></div>
-        <!-- Botón "Ver más" que aparecerá dinámicamente -->
+       
         <a href="#" class="ver-mas-btn" id="verMasBtn">Ver más especificaciones</a>
     </div>
 </div>
@@ -228,7 +224,7 @@ $conexion->close();
                         id: this.dataset.id,
                         nombre: this.dataset.nombre,
                         descripcion: this.dataset.descripcion,
-                        descripcion2: this.dataset.descripcion2 || "No hay especificaciones adicionales", // Manejo seguro
+                        descripcion2: this.dataset.descripcion2 || "No hay especificaciones adicionales", 
 
                         precio: this.dataset.precio,
                         imagen: this.dataset.imagen,
@@ -237,8 +233,8 @@ $conexion->close();
 
                            // Actualizar el botón "Ver más" con el ID del producto
             const verMasBtn = document.getElementById('verMasBtn');
-            verMasBtn.href = `detalle_producto.php?id=${producto.id}`;
-                    // Actualizar modal
+            verMasBtn.href = `detalle_producto.php?id=${producto.id}`;//CREA LA URL DINAMICAMENTE
+                  
                     modalTitle.textContent = producto.nombre;
                     modalDesc.textContent = producto.descripcion;
                                 modalDesc2.innerHTML = producto.descripcion2.replace(/\n/g, '<br>'); // Lado derecho (con saltos de línea)
@@ -254,8 +250,7 @@ $conexion->close();
 
                     // Crear galería
                     gallery.innerHTML = '';
-                    //Crea miniaturas clickables para navegar entre imágenes del producto
-                    // Función para miniaturas
+                 
                     const addThumbnail = (src, active = false) => {
                         const thumb = document.createElement('img');
                         thumb.src = src;
@@ -312,7 +307,7 @@ $conexion->close();
             modalImg.style.transform = 'scale(1)';
         });
 
-        // Cerrar modal
+    
         document.querySelector('.regresar').addEventListener('click', () => {
             modal.style.display = 'none';
             modalImg.style.transform = 'scale(1)'; // Resetear zoom al cerrar
@@ -321,21 +316,21 @@ $conexion->close();
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
-                modalImg.style.transform = 'scale(1)'; // Resetear zoom al cerrar
+                modalImg.style.transform = 'scale(1)'; 
             }
         });
     });
 
 
 //Envía datos del producto al servidor para agregarlo al carrito
-function agregarAlCarrito(form) {//ecibe un parámetro form que es el elemento HTML <form> del modal de producto
+function agregarAlCarrito(form) {
     fetch(form.action, {// URL del archivo PHP que procesará la solicitud (agregar_al_carrito.php)
         method: 'POST',
         body: new URLSearchParams(new FormData(form))//  form dataCrea un objeto con todos los campos del formulario
         //Convierte los datos a formato x-www-form-urlencoded
     })
     .then(response => {
-        // Cierra el modal y recarga
+       
         document.querySelector('.modal').style.display = 'none';
         location.reload();
     })

@@ -40,7 +40,7 @@ try {
         }
     }
 
-    // Sanitizar datos
+   
     $nombre = htmlspecialchars($_POST['nombre'], ENT_QUOTES, 'UTF-8');
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $asunto = htmlspecialchars($_POST['asunto'], ENT_QUOTES, 'UTF-8');
@@ -61,7 +61,7 @@ try {
     $mail->SMTPSecure = $_ENV['SMTP_SECURE'] ?? 'tls';
     $mail->Port = $_ENV['SMTP_PORT'] ?? 587;
     
-    // Solo en desarrollo
+    // Solo en desarrollo activz depuracion de envio
     if ($_ENV['APP_ENV'] === 'development') {
         $mail->SMTPDebug = 2;
         $mail->Debugoutput = function($str, $level) {

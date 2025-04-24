@@ -7,13 +7,13 @@ require_once 'includes/conexion.php';
 
 //FUNCIONALIDAD PARA ACTUALIZAR CARRITO 
 function actualizarContadorCarrito() {
-  if (!isset($_SESSION['carrito'])) {//utilizo session por usuario mas adelante
+  if (!isset($_SESSION['carrito'])) {
       return 0;
   }
   return array_sum(array_column($_SESSION['carrito'], 'cantidad'));
 }
 
-$numItems = actualizarContadorCarrito();//cada que recargue la pagina que me actualice
+$numItems = actualizarContadorCarrito();
 
 ?>
 <!DOCTYPE html>

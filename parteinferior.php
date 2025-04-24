@@ -1,4 +1,4 @@
-</main> <!-- Cierre del contenido principal -->
+</main> 
 <!-- SECCION HERO -->
 <section class="hero-section">
     <div class="hero-content">
@@ -15,20 +15,20 @@
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
             <?php
-            // Conexión a la base de datos
+           
             $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
             if ($conexion->connect_error) {
                 die("Error de conexión: " . $conexion->connect_error);
             }
 
-            // Consulta a tu tabla productop  tomando en cuenta mas adelante funcionalidad de stock
+     
             //busca los ultimos 6 productos y los ordena por fecha de actualizacion  
             $sql = "SELECT * FROM productop WHERE stock > 0 ORDER BY fecha_actualizacion DESC LIMIT 6";
             $resultado = $conexion->query($sql);
 
             if ($resultado->num_rows > 0) {
                 while($producto = $resultado->fetch_assoc()) {
-                    // Preparar datos para el modal  , extrae los datos de cada producto
+                   
                     $nombre = htmlspecialchars($producto['nombre']);
                     $descripcion = htmlspecialchars($producto['descripcion']);
                     $descripcion2 = htmlspecialchars($producto['descripcion2']);
@@ -39,9 +39,9 @@
             <div class="content swiper-slide">
                 <img src="<?php echo $imagen; ?>" alt="<?php echo $nombre; ?>"> <!-- manda a llamar de los datps que recorrio -->
                 <div class="text-content">
-                    <h3><?php echo $nombre; ?></h3><!-- los alinea -->
+                    <h3><?php echo $nombre; ?></h3>
                 
-                    <div class="product-price">$<?php echo $precio; ?></div><!-- manda a llamar el precio-->
+                    <div class="product-price">$<?php echo $precio; ?></div>
                     <!-- GUARDA LOS DATOS DEL PRODUCTO EN LOS ATRIBUTOS DATA , crea un boton html para cada producto internamente , bucle-->
                     <button class="btn1 ver-detalles" 
                     
@@ -58,7 +58,7 @@
             </div>
             <?php
                 }
-            } else {// MIENTRAS HACE LA REVISION Y MUESTRA SI NO DICE QUE NO HAY PRODUCTOS 
+            } else {
                 echo "<div class='no-products'>No hay productos disponibles</div>"; 
             }
             
@@ -105,7 +105,7 @@
     <div class="product-description2-container">
         <h3>Especificaciones:</h3>
         <div class="product-description2">
-            <!-- MUESTRA LAS ESPECIFICACIONES-->
+          
         </div>
         <a href="#" class="ver-mas-btn" id="verMasBtn">Ver más especificaciones</a><!-- JALA DIRECTAMENTE EL ID DEL PRODUCTO SELECCIONADO , SE MANEJA EN EL JAVA  -->
     </div>
@@ -114,7 +114,7 @@
 </div>
 
 
-  <!-- Swiper JS -->
+
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script src="botonesmenu.js"></script>
@@ -299,13 +299,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== FUNCIÓN PARA MOSTRAR MODAL ==========
     function mostrarModal(producto) {
         try {//se usa try catch para el manejo de errores
-            // Validar datos del producto que tenga id y nombre 
+           
             if (!producto.id || !producto.nombre) {
                 console.error('Datos del producto incompletos');
                 return;
             }
 
-            // Actualizar sección izquierda por si los datos no existen
+            
              // Rellena el modal con los datos del producto RECIÉN CLICKEADO
             modalTitle.textContent = producto.nombre || 'Producto sin nombre';
             modalDesc.textContent = producto.descripcion || 'Descripción no disponible';
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? producto.descripcion2.replace(/\n/g, '<br>') //(convierte saltos de linea \n/g, en etiquetas '<br>') para crear los parrafos
                 : 'No hay especificaciones disponibles';
 
-            // Actualizar botón "Ver más"
+        
             if (verMasBtn) {
                 verMasBtn.href = `http://localhost/project/detalle_producto.php?id=${producto.id}`;//lleva a la pagina de deta-pro segun  el id 
                 verMasBtn.style.display = 'block'; 
@@ -344,15 +344,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // "this" => se refiere al botón CLICKEADO en este momento
             try {
                 const producto = {
-                    id: this.dataset.id,// Extrae el data-id de ESTE botón
-                    nombre: this.dataset.nombre, // Extrae el data-nombre de ESTE botón
+                    id: this.dataset.id,
+                    nombre: this.dataset.nombre, 
                     descripcion: this.dataset.descripcion,
                     descripcion2: this.dataset.descripcion2,
                     precio: this.dataset.precio,
                     imagen: this.dataset.imagen,
                     stock: this.dataset.stock || '1'
                 };
-                mostrarModal(producto);// Pasa los datos de ESTE producto al modal
+                mostrarModal(producto);
             } catch (error) {
                 console.error('Error al procesar producto:', error);
             }
@@ -360,12 +360,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ========== FUNCIONALIDAD PARA CERRAR MODAL ==========
-    document.querySelector('.regresar').addEventListener('click', () => {//busca el boton con clase regresar 
-        modal.style.display = 'none';//oculta el modal
+    document.querySelector('.regresar').addEventListener('click', () => {
+        modal.style.display = 'none';
     });
 
     modal.addEventListener('click', (e) => { //escucha los clic en todo el  modal
-        if (e.target === modal) {// verifica que haya sido solo en el fondo 
+        if (e.target === modal) {
             modal.style.display = 'none';
         }
     });
@@ -373,23 +373,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== FUNCIÓN PARA AGREGAR AL CARRITO ==========
     window.agregarAlCarrito = async function(form) {
         try {
-            const submitBtn = form.querySelector('button[type="submit"]');//obtiene el v¿boton de enviar formulario
+            const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             
-            // Deshabilitar botón durante la petición
+         
             submitBtn.disabled = true;
             submitBtn.textContent = 'Añadiendo...';
             
             const response = await fetch(form.action, {//fetch: Hace una petición HTTP al servidor 
                 //form.action: Usa la URL definida en el atributo action del formulario
                 method: 'POST',
-                body: new URLSearchParams(new FormData(form)),//recoge los datos y los envia como formulario web
+                body: new URLSearchParams(new FormData(form)),
                 headers: {
                     'Accept': 'application/json'
                 }
             });
             
-            const data = await response.json();//CONVIERTE  LA RESPUESTA DEL SERVIDOR EN ALGO QUE JS PUEDA ENTENDER FACIL
+            const data = await response.json();
             
             if (!response.ok) {
                 throw new Error(data.message || 'Error en la respuesta');
@@ -398,13 +398,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Cerrar modal inmediatamente
             modal.style.display = 'none';
             
-            // Recargar la página
+          
             location.reload();
-            
-            //MANEJO DE ERRORES
+           
         } catch (error) {
             console.error('Error:', error);
-            // Restaurar botón en caso de error
+            
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
                 submitBtn.disabled = false;

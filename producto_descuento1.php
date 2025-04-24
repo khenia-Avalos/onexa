@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. Conexión a la base de datos
+
 $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
@@ -13,9 +13,9 @@ $producto_id = 2;
 
 // 3. Consulta para obtener el producto principal
 $stmt = $conexion->prepare("SELECT * FROM productos WHERE id = ?");
-$stmt->bind_param("i", $producto_id); // i indica que es un valor entero (id)
-$stmt->execute(); // manda la consulta
-$result = $stmt->get_result(); // obtener resultados
+$stmt->bind_param("i", $producto_id); 
+$stmt->execute(); 
+$result = $stmt->get_result(); 
 
 if ($result->num_rows === 0) {
     die("Producto no encontrado");
@@ -35,23 +35,23 @@ $stmt->close();
 // 5. ORGANIZA LA INFORMACION PARA MOSTRARLA EN LA PAGINA
 $producto_final = [
     'id' => $producto['id'],
-    'nombre' => $producto['nombre'], // Cambiado: sin htmlspecialchars para mostrar comillas directamente
+    'nombre' => $producto['nombre'],
     'descripcion' => htmlspecialchars($producto['descripcion'], ENT_QUOTES, 'UTF-8'), // htmlspecialchars() protege contra código malicioso
-    'precio' => (float)$producto['precio'], // Aseguramos que sea float para cálculos
+    'precio' => (float)$producto['precio'], 
     'imagen_principal' => htmlspecialchars($producto['imagen']),
-    'imagenes' => array_map(function($img) { // array_map(): procesa cada imagen en la lista $imagenes
+    'imagenes' => array_map(function($img) { 
         return ['imagen' => htmlspecialchars($img['imagen'])];
     }, $imagenes)
 ];
 
 // 6. Manejar agregar al carrito
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) { // formulario se envio al hacer clic en boton añadir al carrito
-    // Inicializar carrito si no existe
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) {
+
     if (!isset($_SESSION['carrito'])) {
         $_SESSION['carrito'] = [];
     }
     
-    // Buscar si el producto ya está en el carrito, recorre cada producto ($item) en el carrito si lo encuentra aumenta 1
+  
     $encontrado = false;
     foreach ($_SESSION['carrito'] as &$item) {
         if ($item['id'] == $producto_final['id']) {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) {
         $_SESSION['carrito'][] = [
             'id' => $producto_final['id'],
             'nombre' => $producto_final['nombre'],
-            'precio' => $producto_final['precio'], // Usamos el valor numérico para cálculos
+            'precio' => $producto_final['precio'], 
             'imagen' => $producto_final['imagen_principal'],
             'cantidad' => 1
         ];
@@ -102,17 +102,17 @@ $conexion->close();
             
             <div class="thumbnail-container"> <!-- muestra las miniaturas -->
                 <img src="<?= $producto_final['imagen_principal'] ?>" alt="Miniatura 1" class="thumbnail active" onclick="changeImage(this, '<?= $producto_final['imagen_principal'] ?>')">
-                <?php foreach ($producto_final['imagenes'] as $imagen): ?> <!-- foreach recorre y muestra las imagenes del producto -->
+                <?php foreach ($producto_final['imagenes'] as $imagen): ?> 
                     <img src="<?= $imagen['imagen'] ?>" alt="Miniatura" class="thumbnail" onclick="changeImage(this, '<?= $imagen['imagen'] ?>')">
                 <?php endforeach; ?> <!-- onclick llama a JS PARA PODER CAMBIAR LA IMAGEN -->
             </div>
         </div>
         
         <div class="product-info">
-            <h1 class="product-title"><?= $producto_final['nombre'] ?></h1> <!-- Sin htmlspecialchars para mostrar comillas directamente -->
-            <p class="product-price">$<?= number_format($producto_final['precio'], 2) ?></p> <!-- Formateamos solo al mostrar -->
+            <h1 class="product-title"><?= $producto_final['nombre'] ?></h1> 
+            <p class="product-price">$<?= number_format($producto_final['precio'], 2) ?></p> 
             <div class="product-description">
-                <?= nl2br($producto_final['descripcion']) ?> <!-- MANTIENE EL FORMATO DE SALTO DE LINEA -->
+                <?= nl2br($producto_final['descripcion']) ?> 
             </div>
             <!-- Formulario con campos ocultos que envían toda la información del producto -->
             <form method="POST" class="add-to-cart-form">
@@ -194,18 +194,18 @@ $conexion->close();
    
     <script>
         // Función para cambiar la imagen principal
-        function changeImage(thumbnail, newImage) { // MANEJA EL CAMBIO DE IMAGEN AL HACER CLIC EN MINIATURA
-            // Cambiar la imagen principal
+        function changeImage(thumbnail, newImage) { 
+     
             const mainImage = document.getElementById('mainProductImage'); // OBTIENE LA REFERENCIA DE LA IMG PRINCIPAL POR SU ID
-            mainImage.src = newImage; // CAMBIA SU ATRIBUTO SRC POR LA NUEVA RUTA
+            mainImage.src = newImage; 
             
             // Actualizar la miniatura activa
             document.querySelectorAll('.thumbnail').forEach(thumb => {
                 thumb.classList.remove('active');
             });
-            thumbnail.classList.add('active'); // SOLO LA MINIATURA CLICKEADA
+            thumbnail.classList.add('active'); 
             
-            // Actualizar el campo oculto del formulario POR LA NUEVA IMAGEN
+         
             document.querySelector('input[name="imagen"]').value = newImage;
         }
         
@@ -216,9 +216,9 @@ $conexion->close();
             
             if (!mainImage || !zoomContainer) return;
             
-            // Configurar el zoom al mover el mouse 
+         
             zoomContainer.addEventListener('mousemove', function(e) {
-                const rect = zoomContainer.getBoundingClientRect(); // getBoundingClientRect() obtiene las dimensiones y posición del contenedor
+                const rect = zoomContainer.getBoundingClientRect(); 
                 const x = e.clientX - rect.left; // Calcula la posición exacta del cursor dentro del contenedor
                 const y = e.clientY - rect.top;
                 
@@ -226,16 +226,16 @@ $conexion->close();
                 const relX = x / rect.width;
                 const relY = y / rect.height;
                 
-                // Ajustar el origen de la transformación
+               
                 mainImage.style.transformOrigin = `${relX * 100}% ${relY * 100}%`; // Establece el punto de origen del zoom (donde está el cursor)
                 
-                // Aplicar el zoom
+           
                 mainImage.style.transform = 'scale(2)'; // Aplica un zoom de 2x a la imagen
             });
             
-            // Quitar el zoom al salir del contenedor
+         
             zoomContainer.addEventListener('mouseleave', function() {
-                mainImage.style.transform = 'scale(1)'; // Cuando el cursor sale del contenedor, regresa la imagen a su tamaño normal (1:1)
+                mainImage.style.transform = 'scale(1)'; 
             });
         });
     </script>

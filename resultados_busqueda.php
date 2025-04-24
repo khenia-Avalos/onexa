@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. Conexión a la base de datos con manejo de errores
+
 $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
@@ -11,13 +11,11 @@ $conexion->set_charset("utf8mb4");
 // 2. Obtener término de búsqueda
 $termino = isset($_GET['q']) ? trim($_GET['q']) : '';
 //Obtiene el término de búsqueda de la URL (parámetro 'q')
-//Elimina espacios en blanco con trim()
-//Si no hay término, asigna cadena vacía
+
 
 // 3. Consulta SQL para buscar productos
 //--evitar mostrar productos duplicados
-//--busca coincidencias parciales
-//--Busca productos que coincidan con el término en nombre o descripción--
+
 if (!empty($termino)) {
     $sql = "SELECT p.* 
             FROM productos p
@@ -35,14 +33,13 @@ if (!empty($termino)) {
             ORDER BY p.id ASC";
 
     $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("ss", $termino, $termino);//Asigno los valores reales a los parámetros de la consulta. Las 'ss' indican que son dos strings (texto
+    $stmt->bind_param("ss", $termino, $termino);
     $stmt->execute();
     $productos = $stmt->get_result();// Estos resultados quedan almacenados en la variable $productos para poder usarlos después."
 } else {
     $productos = [];
 }
 
-// 4. Procesamiento seguro de datos
 $productos_finales = [];
 if ($productos) {
     while ($producto = $productos->fetch_assoc()) {
@@ -67,7 +64,7 @@ if ($productos) {
     }
 }
 
-// 5. Inicializar carrito si no existe
+
 if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
@@ -113,13 +110,7 @@ $conexion->close();
             </div>
         <?php endforeach; ?>
     </div>
-<!--Muestra cada producto en una tarjeta
-
-Usa loading="lazy" para carga diferida de imágenes
-
-Formatea el precio con 2 decimales
-
-Prepara botones de detalles con todos los datos necesarios en atributos data-*-->
+<!--Muestra cada producto en una tarjeta-->
 
 
 
@@ -152,8 +143,8 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {//-Espera a que el HTML esté completamente cargado antes de ejecutar el código JavaScript
-       //Prepara todas las referencias a elementos  que se usarán repetidamente
+    document.addEventListener('DOMContentLoaded', function() {
+    
         const modal = document.querySelector('.modal');
         const modalImg = document.getElementById('main-product-image');
         const modalTitle = document.querySelector('.product-title');
@@ -183,16 +174,16 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
                     modalPrice.textContent = '$' + parseFloat(producto.precio).toFixed(2);
                     modalImg.src = producto.imagen;
 
-                    // Actualizar formulario
+                    
                     form.querySelector('input[name="id"]').value = producto.id;
                     form.querySelector('input[name="nombre"]').value = producto.nombre;
                     form.querySelector('input[name="precio"]').value = producto.precio;
                     form.querySelector('input[name="imagen"]').value = producto.imagen;
 
-                    // Crear galería
+                  
                     gallery.innerHTML = '';
                     
-                    // Función para miniaturasCrea miniaturas clickables para cada imagen del producto
+                  
                     const addThumbnail = (src, active = false) => {
                         const thumb = document.createElement('img');
                         thumb.src = src;
@@ -210,14 +201,14 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
                     };
 
                     // Imagen principal
-                    addThumbnail(producto.imagen, true);//Añade todas las imágenes a la galería
+                    addThumbnail(producto.imagen, true);
                     
                     // Imágenes adicionales
                     producto.imagenes.forEach(img => {
                         if (img.imagen) addThumbnail(img.imagen);
                     });
 
-                    // Mostrar modal
+                 
                     modal.style.display = 'flex';
                     
                 } catch (e) {
@@ -229,7 +220,7 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
 
         // Efecto de zoom que sigue el cursor
         mainImageContainer.addEventListener('mousemove', function(e) {
-            if (window.innerWidth <= 768) return; // No hacer zoom en móviles
+            if (window.innerWidth <= 768) return; 
             
             const rect = this.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -238,7 +229,7 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
             const xPercent = (x / rect.width) * 100;
             const yPercent = (y / rect.height) * 100;
             
-            // Ajuste dinámico del origen del zoom
+      
             modalImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
             
             // Intensidad del zoom (2x)
@@ -250,7 +241,6 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
             modalImg.style.transform = 'scale(1)';
         });
 
-        // Cerrar modal
         document.querySelector('.regresar').addEventListener('click', () => {
             modal.style.display = 'none';
             modalImg.style.transform = 'scale(1)'; // Resetear zoom al cerrar
@@ -259,7 +249,7 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
-                modalImg.style.transform = 'scale(1)'; // Resetear zoom al cerrar
+                modalImg.style.transform = 'scale(1)'; 
             }
         });
     });
@@ -270,7 +260,7 @@ Prepara botones de detalles con todos los datos necesarios en atributos data-*--
             body: new URLSearchParams(new FormData(form))
         })
         .then(response => {
-            // Cierra el modal y recarga
+            
             document.querySelector('.modal').style.display = 'none';
             location.reload();
         })

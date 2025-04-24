@@ -1,7 +1,7 @@
 <?php
-session_start();//Inicia la sesión para acceder a variables de sesión como $_SESSION['ultimo_pedido']
+session_start();
 
-// Configuración de la base de datos
+
 $db_host = 'localhost';
 $db_name = 'tienda';
 $db_user = 'kheniali';
@@ -10,15 +10,15 @@ $db_pass = '123';
 // Obtener ID del pedido de la URL o de la sesión, con fallback a null
 $id_pedido = $_GET['id'] ?? $_SESSION['ultimo_pedido'] ?? null;
 
-// Validación estricta
+
 if (!is_numeric($id_pedido)) {
     die("Error: ID de pedido inválido");//Validación de seguridad para el ID del pedido
 }
 
 try {
-    $db = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);//Conexión a la base de datos usando PDO
+    $db = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    //Consulta SQL para obtener datos del pedido y del cliente
+  
     $stmtPedido = $db->prepare("SELECT p.*, c.nombre, c.apellido, c.email  
                                FROM pedidos p
                                JOIN clientes c ON p.id_cliente = c.id_cliente

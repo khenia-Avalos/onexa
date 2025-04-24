@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. Conexión a la base de datos
+
 $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
@@ -24,7 +24,7 @@ if ($result->num_rows === 0) {
 $producto = $result->fetch_assoc();
 $stmt->close();
 
-// 4. Obtener imágenes adicionales
+
 $stmt = $conexion->prepare("SELECT imagen FROM producto_imagenes WHERE producto_id = ? ORDER BY orden");
 $stmt->bind_param("i", $producto_id);
 $stmt->execute();
@@ -32,26 +32,25 @@ $imagenes_result = $stmt->get_result();
 $imagenes = $imagenes_result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-// 5. Procesar datos para seguridad y visualización - CORRECCIÓN PRINCIPAL
-// Limpiar el precio si contiene comas y convertirlo a float
+
 $precio_limpio = str_replace(',', '', $producto['precio']);
 $precio_float = (float)$precio_limpio;
 
 $producto_final = [
     'id' => $producto['id'],
-    'nombre' => $producto['nombre'], // Mostramos el nombre directamente para comillas correctas
+    'nombre' => $producto['nombre'], 
     'descripcion' => htmlspecialchars($producto['descripcion'], ENT_QUOTES, 'UTF-8'),
-    'precio' => $precio_float, // Guardamos como float para cálculos
-    'precio_formateado' => number_format($precio_float, 2), // Formateado solo para visualización
+    'precio' => $precio_float, 
+    'precio_formateado' => number_format($precio_float, 2), 
     'imagen_principal' => htmlspecialchars($producto['imagen']),
     'imagenes' => array_map(function($img) {
         return ['imagen' => htmlspecialchars($img['imagen'])];
     }, $imagenes)
 ];
 
-// 6. Manejar agregar al carrito
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) {
-    // Inicializar carrito si no existe
+   
     if (!isset($_SESSION['carrito'])) {
         $_SESSION['carrito'] = [];
     }
@@ -71,13 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) {
         $_SESSION['carrito'][] = [
             'id' => $producto_final['id'],
             'nombre' => $producto_final['nombre'],
-            'precio' => $producto_final['precio'], // Usamos el valor numérico para cálculos
+            'precio' => $producto_final['precio'], 
             'imagen' => $producto_final['imagen_principal'],
             'cantidad' => 1
         ];
     }
     
-    // Redirigir a la misma página sin parámetros POST
+  
     header("Location: ".$_SERVER['PHP_SELF']."?id=".$producto_id);
     exit;
 }
@@ -200,7 +199,7 @@ $conexion->close();
     <script>
         // Función para cambiar la imagen principal
         function changeImage(thumbnail, newImage) {
-            // Cambiar la imagen principal
+        
             const mainImage = document.getElementById('mainProductImage');
             mainImage.src = newImage;
             
@@ -210,7 +209,7 @@ $conexion->close();
             });
             thumbnail.classList.add('active');
             
-            // Actualizar el campo oculto del formulario
+          
             document.querySelector('input[name="imagen"]').value = newImage;
         }
         
@@ -231,10 +230,10 @@ $conexion->close();
                 const relX = x / rect.width;
                 const relY = y / rect.height;
                 
-                // Ajustar el origen de la transformación
+          
                 mainImage.style.transformOrigin = `${relX * 100}% ${relY * 100}%`;
                 
-                // Aplicar el zoom
+             
                 mainImage.style.transform = 'scale(2)';
             });
             

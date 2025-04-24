@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-// Configuración de la base de datos (ajusta estos valores)
+
 $host = 'localhost';
 $dbname = 'tienda';
 $username = 'kheniali';
 $password = '123';
 
-// Conexión a la base de datos
+
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -17,7 +17,7 @@ try {
 
 // Procesar el formulario cuando se envía
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['registro'])) {
-    // Obtener y limpiar los datos
+   
     $nombre = htmlspecialchars(trim($_POST['nombre_user']));
     $correo = filter_var(trim($_POST['correo_user']), FILTER_SANITIZE_EMAIL);
     $contrasena = $_POST['contrasena_user'];
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['registro'])) {
                 $stmt = $conn->prepare("INSERT INTO usuarios (nombre_user, contrasena_user, correo_user) VALUES (?, ?, ?)");
                 $stmt->execute([$nombre, $contrasena_hash, $correo]);
                 
-                // Establecer variable de sesión para el mensaje de éxito
+                
                 $_SESSION['registro_exitoso'] = true;
                 
                 // Redirigir para evitar reenvío del formulario
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['registro'])) {
         }
     }
     
-    // Si hay errores, guardarlos en sesión
+  
     if (!empty($errores)) {
         $_SESSION['errores_registro'] = $errores;
         header("Location: login1.php");
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['registro'])) {
     }
 }
 
-// Si se accede directamente a registro.php sin enviar formulario
+
 header("Location: login1.php");
 exit();
 ?>

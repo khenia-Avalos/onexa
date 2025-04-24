@@ -13,7 +13,7 @@ if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Función para calcular el total
+
 function calcularTotal($carrito) {
     $total = 0;
     foreach ($carrito as $producto) {
@@ -24,14 +24,13 @@ function calcularTotal($carrito) {
     return number_format($total, 2);
 }
 
-// Conexión a la base de datos para obtener productos recomendados
+
 $conexion = new mysqli("localhost", "kheniali", "123", "tienda");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
 $conexion->set_charset("utf8mb4");
 
-// Consulta para obtener 5 productos recomendados
 $sql_recomendados = "SELECT * FROM recomendados ORDER BY RAND() LIMIT 5";
 $result_recomendados = $conexion->query($sql_recomendados);
 

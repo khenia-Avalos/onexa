@@ -1,5 +1,5 @@
 <?php
-// Iniciar sesión al principio del archivo
+
 session_start();
 
 // Generar token CSRF solo si no existe
