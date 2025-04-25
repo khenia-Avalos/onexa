@@ -9,7 +9,7 @@ if ($conexion->connect_error) {
 $conexion->set_charset("utf8mb4");
 
 // 2. Obtener el producto con ID 2 (ESPECIFICO QUE LLAME AL PRODUCTO CON ID 2)
-$producto_id = 2;
+$producto_id = 71;
 
 // 3. Consulta para obtener el producto principal
 $stmt = $conexion->prepare("SELECT * FROM productos WHERE id = ?");

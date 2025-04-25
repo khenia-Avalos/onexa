@@ -167,13 +167,14 @@
 
 .affirm-section-title {
     text-align: center;
-    color: var(--onexa-blue);
+ color: aliceblue;
     font-size: 2rem;
     margin-bottom: 3rem;
     font-weight: 600;
 }
 
 .affirm-steps {
+    color:aliceblue;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -182,6 +183,7 @@
 }
 
 .affirm-step {
+    
     flex: 1;
     min-width: 250px;
     text-align: center;
@@ -217,6 +219,7 @@
 }
 
 .affirm-categories {
+    color: aliceblue;
     background-color: var(--light-bg);
     padding: 4rem 2rem;
     text-align: center;
